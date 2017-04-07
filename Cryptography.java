@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Decrypter {
+public class Cryptography {
 	
 	static boolean isLastLine = false;
 	
@@ -18,21 +18,19 @@ public class Decrypter {
 		String inputText = "";
 		String outputText = "";
 		String remainderText = "";
+		
 		//Gets the inputed text from the user
 		Scanner input = new Scanner(System.in);
 		PrintWriter output = null;
 		
-		String command = args[0];//input.next(); //Finds out whether the user wants to encypt or decrypt
-		String key = args[1];//input.next(); //Gets the key from the user
+		String command = args[0]; //Finds out whether the user wants to encypt or decrypt
+		String key = args[1]; //Gets the key from the user
 		
 		
 		
 		try {
-			//input = new Scanner(new File("/Volumes/Macintosh HD/Users/macbookpro/Documents/"
-			//		+ "Stored Documents/Programming/Java/workspace/Cryptography/input3.txt"));
 			input = new Scanner(new File(args[2]));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			showMessage();
 		}
@@ -41,7 +39,6 @@ public class Decrypter {
 			//output = new PrintWriter("output.txt");
 			output = new PrintWriter(args[3]);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			showMessage();
 		}
@@ -49,14 +46,10 @@ public class Decrypter {
 		
 		//Runs the decryter/encrypter as long as the file has text available
 		while (input.hasNextLine()) {
-			//input.useDelimiter("");
 			inputText = remainderText + input.nextLine();
 			inputText = inputText.toUpperCase();
-			//System.out.printf("Line length is: %d\n", inputText.length());
-			//System.out.printf("hasNextLine = %b\n", input.hasNextLine());
 			int numOfSteps = inputText.length() / 64;
 			int remainder = inputText.length() % 64;
-			//System.out.printf("Number of steps is %d\n", numOfSteps); //TODO Get rid of
 			if (remainder > 0) { 
 				remainderText = inputText.substring(64 * numOfSteps, 64 * numOfSteps + remainder) + " ";
 			} else {
@@ -72,13 +65,9 @@ public class Decrypter {
 				} else {
 					break;
 				}
-				//System.out.printf("Input text length is %d\n", inputText.length());
+				
 				if (command.toLowerCase().equals("encrypt")) {
-					//System.out.println(inputText.substring(64 * i, 64 * (i + 1))); //TODO Get rid of
-					//System.out.println(key); //TODO Get rid of
-					//outputText = encrypt(inputText.substring(64 * i, 64 * (i + 1)), key);
 					outputText = encrypt(currentStepText, key);
-					//System.out.println(outputText); //TODO Get rid of
 					output.println(outputText);
 				} else if (command.toLowerCase().equals("decrypt")) {
 					if (input.hasNextLine() == false) {
@@ -97,15 +86,9 @@ public class Decrypter {
 	//Decrypts the given encrypted text using the given key
 	public static String decrypt(String inputText, String key) {
 		int hash = key.hashCode();
-		StringBuffer text = new StringBuffer(inputText); //Uncomment when implementing
-		//StringBuffer text = new StringBuffer("JUOWTN YBSTG XNOOGOVRCVYJYRYJBUOWJ XATOJVOGOFAYXBHOBKOAUWBHJUSOC"); //Test
-		//StringBuffer text = new StringBuffer("YXJVOJVOGOV AWJGLOYAVYOJUOYXAO TGWYJWAOBKOWTN YBSTG XN");
-		//StringBuffer text = new StringBuffer("JUOWTN YBSTG XNOOGOVRCVYJYRYJBUOWJ XATOJVOG"
-		//		+ "OFAYXBHOBKOAUWBHJUSOCNOZXJWXORUJYVOBKO LGJUYAEYOGTAOTA LGWAHOZJYXOWJ XATYAEY");
+		StringBuffer text = new StringBuffer(inputText);
 		text = performTransposition(text, hash, "decrypt");
-		//System.out.println(text);
 		performSubstitution(text, hash, "decrypt");
-		//System.out.println(text); //Verifies that the subsitution pattern worked
 		return text.toString();
 	}
 	
@@ -113,16 +96,10 @@ public class Decrypter {
 	public static String encrypt(String inputText, String key) {
 		int hash = key.hashCode();
 		StringBuffer text = new StringBuffer(inputText);
-		//StringBuffer text = new StringBuffer("IN CRYPTOGRAPHY, A SUBSTITUTION CIPHER IS A METHOD OF ENCODING B"); //Test
-		//StringBuffer text = new StringBuffer("THIS IS A SPECIAL TEST IN THE PRACTICE OF CRYPTOGRAPHY");
-		//StringBuffer text = new StringBuffer("IN CRYPTOGRAPHY, A SUBSTITUTION CIPHER IS A METHOD OF ENCODING "
-		//		+ "BY WHICH UNITS OF PLAINTEXT ARE REPLACED WITH CIPHERTEXT");
 		removeSpecialCharacters(text);
 		performSubstitution(text, hash, "encrypt");
-		//System.out.printf("%s\n", text); //Verifies that the substitution pattern worked
 		
 		text = performTransposition(text, hash, "encrypt");
-		//System.out.printf("%s\n", text); //Verifies that the transposition pattern worked
 		return text.toString();
 	}
 	
@@ -187,9 +164,6 @@ public class Decrypter {
 			int firstNum = numbers[firstRandom];
 			numbers[firstRandom] = numbers[secondRandom];
 			numbers[secondRandom] = firstNum;
-			//if (command.equals("decrypt")) {
-			//	numbers = reverseNumbers(numbers);
-			//}
 		}
 		
 		if (textLength < 64) {
@@ -259,9 +233,7 @@ public class Decrypter {
 			for (int column = 0; column < 8; column++) {
 				grid[row][column]= text.charAt(stringIndex);
 				stringIndex++;
-				//System.out.print(grid[row][column] + " ");
 			}
-			//System.out.println();
 		}
 		return grid;
 	}
@@ -269,28 +241,6 @@ public class Decrypter {
 	//Takes the 2D array of chars and turns it into a string by reading the columns in the given order
 	public static StringBuffer gridToString(char grid[][], int order[], String command) {
 		StringBuffer resultText = new StringBuffer();
-		/*
-		if (command.equals("encrypt")) {
-			char transpose[][] = getGridTranspose(grid);
-			for (int i = 0; i < transpose.length; i++) {
-				StringBuffer currentRow = new StringBuffer();
-				for (int j = 0; j < grid.length; j++) {
-					currentRow.append(transpose[order[i]][j]);
-				}
-				resultText.append(currentRow);
-			}
-		} else if (command.equals("decrypt")) {
-			grid = rearrangeGrid(grid, order);
-			char transpose[][] = getGridTranspose(grid);
-			for (int i = 0; i < transpose.length; i++) {
-				StringBuffer currentRow = new StringBuffer();
-				for (int j = 0; j < grid.length; j++) {
-					currentRow.append(transpose[i][j]);
-				}
-				resultText.append(currentRow);
-			}
-		}
-		*/
 		if (command.equals("decrypt")) {
 			grid = rearrangeGrid(grid, order);
 		}
@@ -336,7 +286,7 @@ public class Decrypter {
 	}
 	
 	public static void showMessage() {
-		System.out.println("Correct usage: java Decrypter key inputfile outputfile");
+		System.out.println("Correct usage: java Cryptography key inputfile outputfile");
 	}
 	
 }
